@@ -86,6 +86,11 @@ debconf-set-selections <<< 'mysql-server mysql-server/root_password_again passwo
  
 # Installing packages
 apt-get install -y mysql-server mysql-client php5-mysql
+
+#expose mysql server
+sudo mysql --host=localhost --user=root --password=root -e "GRANT ALL ON *.* to root@'%' IDENTIFIED BY 'root' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+sudo sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
+sudo service mysql restart
  
 # ---------------------------------------
 #          PHPMyAdmin setup
@@ -131,8 +136,3 @@ curl -s https://getcomposer.org/installer | php
  
 # Make Composer available globally
 mv composer.phar /usr/local/bin/composer
-
-#expose mysql server
-sudo mysql --host=localhost --user=root --password=root -e "GRANT ALL ON *.* to root@'%' IDENTIFIED BY 'root'; FLUSH PRIVILEGES;"
-sudo sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
-sudo service mysql restart
